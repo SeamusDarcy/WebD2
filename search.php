@@ -67,6 +67,7 @@ if ($searchTerm !== '' || $categoryId !== '') {
 }
 
 include 'includes/header.php';
+include 'includes/nav.php';
 ?>
 
 <style>

@@ -1,24 +1,17 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>BookReserve</title>
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="imgs/logo.png">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #1A1C28; /* Dark navy */
+            background: #1A1C28;
             color: #fff;
         }
 
@@ -28,48 +21,50 @@ if (session_status() === PHP_SESSION_NONE) {
             flex-direction: column;
         }
 
-        /* ---------------- LOGO BAR ---------------- */
+        /* ----- HEADER BAR ----- */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: #14161F;
+            border-bottom: 1px solid #2c3145;
+        }
 
-        .logo-bar {
+        .header-left {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 20px 40px;
         }
 
         .logo-text {
             font-size: 30px;
             font-weight: bold;
-            color: #9CA7D1; /* accent color */
+            color: #9CA7D1;
         }
 
         .logo-img {
             height: 38px;
             width: auto;
             object-fit: contain;
-            margin-top: -4px;  /* align vertically */
-            vertical-align: middle;
-        }
-
-        /* ----------- PAGE CONTENT WRAPPER ---------- */
-        .content-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px 0;
+            margin-top: -4px;
         }
     </style>
 </head>
+
 <body>
 
 <div class="page-wrapper">
 
-    <!-- LOGO BAR -->
-    <div class="logo-bar">
-        <div class="logo-text">BookReserve</div>
-        <img src="imgs/logo.png" alt="Logo" class="logo-img">
-    </div>
+    <div class="header-bar">
+        <div class="header-left">
+            <span class="logo-text">BookReserve</span>
+            <img src="imgs/logo.png" alt="Logo" class="logo-img">
+        </div>
 
-    <!-- Page content starts here -->
-    <div class="content-container">
+        <?php if (empty($hideNav)): ?>
+            <div class="header-right">
+                <?php include __DIR__ . '/nav.php'; ?>
+            </div>
+        <?php endif; ?>
+    </div>

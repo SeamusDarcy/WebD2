@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$hideNav = true;
 include 'includes/header.php';
 ?>
 

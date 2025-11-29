@@ -31,7 +31,7 @@
 <style>
     .footer {
         background: #14161f;
-        padding: 18px 28px; 
+        padding: 14px 28px; 
         color: #cbd0e0;
     }
 

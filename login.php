@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = 'Please enter both username and password.';
     } else {
-        // Updated to match new User table structure
         $sql = "SELECT username, password, FirstName, Surname 
                 FROM User 
                 WHERE username = ?";
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($row['password'] === $password) {
 
                     $_SESSION['username'] = $row['username'];
-                    // Build fullName from FirstName + Surname
                     $_SESSION['fullName'] = $row['FirstName'] . ' ' . $row['Surname'];
 
                     header('Location: index.php');
@@ -46,17 +44,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$hideNav = true;
 include 'includes/header.php';
 ?>
 
-
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #1A1C28; /* same dark navy as account page */
+        color: #fff;
+    }
+
+    .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
     .login-container {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-grow: 1;
-        padding: 20px 0; 
+        padding: 20px 0;
     }
 
     .login-panel {
