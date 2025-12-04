@@ -1,5 +1,5 @@
 <?php
-// Ensure session is active so we can check login status
+// error checking active login 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,11 +12,10 @@ if (session_status() === PHP_SESSION_NONE) {
         <li><a href="books.php">Browse Books</a></li>
         <li><a href="CurrentRes.php">My Reservations</a></li>
 
-        <?php if (isset($_SESSION['username'])): ?>
-            <!-- Spacer pushes logout to the right -->
+        <?php if (isset($_SESSION['username'])): ?> <!-- check if session has a username, (login)-->
             <li class="spacer"></li>
 
-            <li><a href="logout.php" class="logout-btn">Logout</a></li>
+            <li><a href="logout.php" class="logout-btn">Logout</a></li> <!-- Only apperears if user is logged in -->
         <?php endif; ?>
 
     </ul>
@@ -43,7 +42,7 @@ if (session_status() === PHP_SESSION_NONE) {
         margin: 0;
     }
 
-    /* Spacer pushes logout to the far right */
+    /* spacer to force push logout futher right */
     .spacer {
         flex-grow: 1;
     }
@@ -63,7 +62,7 @@ if (session_status() === PHP_SESSION_NONE) {
         text-decoration: none;
     }
 
-    /* Optional: Make logout button slightly more noticeable */
+    /* bold fonnt to make loigut stand out more*/
     .logout-btn {
         font-weight: bold;
     }

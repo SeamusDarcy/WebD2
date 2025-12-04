@@ -2,12 +2,14 @@
 session_start();
 include 'includes/config.php';
 
-$error = '';
+$error = ''; 
 
+// only runs the code if page was submitted using POST 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $username    = trim($_POST['username'] ?? '');
-    $password    = trim($_POST['password'] ?? '');
+    // collects the info form form and stores in variables the sends it to POST  
+    $username    = trim($_POST['username'] ?? ''); // ?? '' Null coalescing so if value already exits use that if not sets to null 
+    $password    = trim($_POST['password'] ?? ''); // trim to remove extra spaces
     $confirm     = trim($_POST['confirm_password'] ?? '');
     $firstName   = trim($_POST['firstName'] ?? '');
     $surname     = trim($_POST['surname'] ?? '');
@@ -32,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Mobile number must be numeric and exactly 10 digits.';
     } else {
 
-        $checkSql = "SELECT username FROM User WHERE username = ?";
-        $checkStmt = $conn->prepare($checkSql);
+        $checkSql = "SELECT username FROM User WHERE username = ?"; // query db to select username that matchs post while using '?' placeholder to avoid SQl injection
+        $checkStmt = $conn->prepare($checkSql); // creates prepared statment from the SQL query to use
 
         if ($checkStmt) {
-            $checkStmt->bind_param("s", $username);
-            $checkStmt->execute();
-            $checkResult = $checkStmt->get_result();
+            $checkStmt->bind_param("s", $username); 
+            $checkStmt->execute(); 
+            $checkResult = $checkStmt->get_result(); 
 
-            if ($checkResult->num_rows > 0) {
+            if ($checkResult->num_rows > 0) /*0 = no username ex 1 = match*/  {
                 $error = 'That username is already taken.';
             } else {
 
@@ -52,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($insertStmt) {
                     $insertStmt->bind_param(
-                        "sssssssss",
+                        "sssssssss", /*prepreared statement to make all variables string types*/ 
                         $username,
                         $password,
                         $firstName,

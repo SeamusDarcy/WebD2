@@ -2,19 +2,19 @@
 session_start();
 include 'includes/config.php';
 
-$searchTerm = trim($_GET['searchTerm'] ?? '');
-$categoryId = trim($_GET['categoryId'] ?? '');
+$searchTerm   = trim($_GET['searchTerm'] ?? '');
+$categoryId   = trim($_GET['categoryId'] ?? '');
 $formSubmitted = isset($_GET['searchTerm']) || isset($_GET['categoryId']);
 
 $categories = [];
-$books = [];
-$error = '';
+$books      = [];
+$error      = '';
 
 // Load categories for dropdown
-$catSql = "SELECT categoryId, categoryName FROM Category ORDER BY categoryName";
+$catSql    = "SELECT categoryId, categoryName FROM Category ORDER BY categoryName";
 $catResult = $conn->query($catSql);
 if ($catResult) {
-    while ($row = $catResult->fetch_assoc()) {
+    while ($row = $catResult->fetch_assoc()) { // gets one row at a time
         $categories[] = $row;
     }
 } else {
@@ -28,31 +28,31 @@ if ($formSubmitted) {
             JOIN Category C ON B.categoryId = C.categoryId";
 
     $conditions = [];
-    $params = [];
-    $types = '';
+    $params     = [];
+    $types      = '';
 
     if ($searchTerm !== '') {
-        $conditions[] = "(B.title LIKE ? OR B.author LIKE ?)";
-        $like = '%' . $searchTerm . '%';
+        $conditions[] = "(B.title LIKE ? OR B.author LIKE ?)"; // sets the query to use Searched terms
+        $like   = '%' . $searchTerm . '%';
         $types .= 'ss';
         $params[] = $like;
         $params[] = $like;
     }
 
     if ($categoryId !== '') {
-        $conditions[] = "B.categoryId = ?";
-        $types .= 'i';
-        $params[] = (int)$categoryId;
+        $conditions[] = "B.categoryId = ?"; //uses user seacrch term for the query, 
+        $types       .= 'i';
+        $params[]     = (int)$categoryId;
     }
 
     if (!empty($conditions)) {
-        $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        $sql .= ' WHERE ' . implode(' AND ', $conditions); // is no categorey entered searchs all cats
     }
 
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         if (!empty($params)) {
-            $stmt->bind_param($types, ...$params);
+            $stmt->bind_param($types, ...$params); // use ...$param to combine both searchs into one
         }
         $stmt->execute();
         $result = $stmt->get_result();
@@ -65,6 +65,47 @@ if ($formSubmitted) {
     } else {
         $error = 'Database error during search.';
     }
+}
+
+/* Simple Pagination (same style as Browse Books) */
+$booksPerPage = 5;
+$totalBooks   = count($books);
+
+// Get current page from URL
+if (isset($_GET['page'])) {
+    $currentPage = (int) $_GET['page'];
+} else {
+    $currentPage = 1;
+}
+
+
+if ($currentPage < 1) {
+    $currentPage = 1;
+}
+
+
+if ($totalBooks > 0) {
+    $totalPages = ceil($totalBooks / $booksPerPage);
+} else {
+    $totalPages = 1;
+}
+
+
+if ($currentPage > $totalPages) {
+    $currentPage = $totalPages;
+}
+
+
+$offset = ($currentPage - 1) * $booksPerPage;
+
+// Get only the books for this page
+$pagedBooks = array_slice($books, $offset, $booksPerPage);
+
+
+function buildPageUrl($page) {
+    $params = $_GET;
+    $params['page'] = $page;
+    return $_SERVER['PHP_SELF'] . '?' . http_build_query($params);
 }
 
 include 'includes/header.php';
@@ -168,6 +209,29 @@ include 'includes/nav.php';
     .btn-disabled:hover { background:#555; }
 
     .reserve-cell { text-align:right; }
+
+   
+    .pagination {
+        margin-top: 15px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .pagination a {
+        color: #E4E8F2;
+        text-decoration: none;
+        margin: 0 6px;
+        font-weight: 500;
+    }
+
+    .pagination a:hover {
+        text-decoration: underline;
+    }
+
+    .pagination .current-page {
+        font-weight: bold;
+        margin: 0 6px;
+    }
 </style>
 
 <div class="search-container">
@@ -218,7 +282,7 @@ include 'includes/nav.php';
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($books as $book): ?>
+                            <?php foreach ($pagedBooks as $book): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($book['title']) ?></td>
                                     <td><?= htmlspecialchars($book['author']) ?></td>
@@ -239,6 +303,27 @@ include 'includes/nav.php';
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination">
+                            <?php if ($currentPage > 1): ?>
+                                <a href="<?= htmlspecialchars(buildPageUrl($currentPage - 1)) ?>">
+                                    Previous
+                                </a>
+                            <?php endif; ?>
+
+                            <span class="current-page">
+                                Page <?= $currentPage ?> of <?= $totalPages ?>
+                            </span>
+
+                            <?php if ($currentPage < $totalPages): ?>
+                                <a href="<?= htmlspecialchars(buildPageUrl($currentPage + 1)) ?>">
+                                    Next
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
                 <?php else: ?>
                     <div class="no-results">No books found matching your search.</div>
                 <?php endif; ?>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>BookReserve</title>
 
-    <!-- Favicon -->
+    <!-- icon -->
     <link rel="icon" type="image/png" href="imgs/logo.png">
 
     <style>
@@ -21,7 +21,7 @@
             flex-direction: column;
         }
 
-        /* ----- HEADER BAR ----- */
+        
         .header-bar {
             display: flex;
             justify-content: space-between;
@@ -62,7 +62,8 @@
             <img src="imgs/logo.png" alt="Logo" class="logo-img">
         </div>
 
-        <?php if (empty($hideNav)): ?>
+        <!-- Set up variable to hide nav bar on certian pages if needed (e.g. login) -->
+        <?php if (empty($hideNav)): ?>  
             <div class="header-right">
                 <?php include __DIR__ . '/nav.php'; ?>
             </div>

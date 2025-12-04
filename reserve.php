@@ -15,7 +15,7 @@ $error = '';
 $success = '';
 
 $today = date('Y-m-d');
-$defaultTo = date('Y-m-d', strtotime('+7 days'));
+$defaultTo = date('Y-m-d', strtotime('+7 days'));  //default res time is 7 days 
 
 // Handle reservation submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

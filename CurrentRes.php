@@ -12,7 +12,7 @@ $username = $_SESSION['username'];
 $error = '';
 $success = '';
 
-// Handle cancellation
+// if cancel post submiited 
 if (isset($_POST['cancel_isbn'])) {
 
     $isbn = $_POST['cancel_isbn'];
@@ -50,6 +50,7 @@ if (isset($_POST['cancel_isbn'])) {
 // Load all reservations for this user
 $reservations = [];
 
+// joins ResBooks, CatID and Books
 $sql = "SELECT RB.isbn, RB.reservedFromDate, RB.reservedToDate,
                B.title, B.author, B.Year, C.categoryName
         FROM reservedBooks RB

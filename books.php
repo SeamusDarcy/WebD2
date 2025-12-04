@@ -5,7 +5,7 @@ include 'includes/config.php';
 $books = [];
 $error = '';
 
-// Load all books from the database including "reserved" status
+// Load all books from the database including already reserved ones
 $sql = "SELECT B.isbn, B.title, B.author, B.Edition, B.Year, B.reserved, C.categoryName
         FROM Books B
         JOIN Category C ON B.categoryId = C.categoryId
@@ -17,12 +17,51 @@ if ($stmt) {
     $result = $stmt->get_result();
 
     while ($row = $result->fetch_assoc()) {
-        $books[] = $row;
+        $books[] = $row; // puts each book data in a row in $book
     }
 
     $stmt->close();
 } else {
     $error = 'Database error while loading books.';
+}
+
+/* Pagination */
+$booksPerPage = 5;
+$totalBooks = count($books);
+
+
+if (isset($_GET['page'])) { /** checks if page is in URL and a number */
+    $currentPage = (int) $_GET['page'];
+} else {
+    $currentPage = 1;
+}
+
+if ($currentPage < 1) {
+    $currentPage = 1;
+}
+
+if ($totalBooks > 0) {
+    $totalPages = ceil($totalBooks / $booksPerPage);
+} else {
+    $totalPages = 1;
+}
+
+
+if ($currentPage > $totalPages) {
+    $currentPage = $totalPages;
+}
+
+// Figure out where to start in the array
+$offset = ($currentPage - 1) * $booksPerPage;
+
+// Get only the books for this page
+$pagedBooks = array_slice($books, $offset, $booksPerPage);
+
+//  change url for active page
+function buildPageUrl($page) {
+    $params = $_GET;
+    $params['page'] = $page;
+    return $_SERVER['PHP_SELF'] . '?' . http_build_query($params);
 }
 
 include 'includes/header.php';
@@ -154,6 +193,29 @@ include 'includes/nav.php';
     .reserve-cell {
         text-align: right;
     }
+
+    /* Pagination styles */
+    .pagination {
+        margin-top: 15px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .pagination a {
+        color: #E4E8F2;
+        text-decoration: none;
+        margin: 0 6px;
+        font-weight: 500;
+    }
+
+    .pagination a:hover {
+        text-decoration: underline;
+    }
+
+    .pagination .current-page {
+        font-weight: bold;
+        margin: 0 6px;
+    }
 </style>
 
 <div class="search-container">
@@ -169,7 +231,7 @@ include 'includes/nav.php';
         <div class="results-section">
             <div class="results-title">Browse All Books</div>
 
-            <?php if (count($books) > 0): ?>
+            <?php if ($totalBooks > 0): ?>
                 <table class="results-table">
                     <thead>
                         <tr>
@@ -181,7 +243,7 @@ include 'includes/nav.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($books as $book): ?>
+                        <?php foreach ($pagedBooks as $book): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($book['title']); ?></td>
                                 <td><?php echo htmlspecialchars($book['author']); ?></td>
@@ -189,14 +251,14 @@ include 'includes/nav.php';
                                 <td><?php echo htmlspecialchars($book['categoryName']); ?></td>
 
                                 <td class="reserve-cell">
-                                    <?php if ($book['reserved'] == 1): ?>
+                                    <?php if ($book['reserved'] == 1): ?> <!-- if booked already reserved-->
                                         <span class="btn-reserve btn-disabled">
                                             Unavailable
                                         </span>
                                     <?php else: ?>
                                         <a
                                             class="btn-reserve"
-                                            href="reserve.php?isbn=<?php echo urlencode($book['isbn']); ?>"
+                                            href="reserve.php?isbn=<?php echo urlencode($book['isbn']); ?>" 
                                         >
                                             Reserve
                                         </a>
@@ -207,6 +269,27 @@ include 'includes/nav.php';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
+                <?php if ($totalPages > 1): ?> <!-- if more than one page show pagination control-->
+                    <div class="pagination">
+                        <?php if ($currentPage > 1): ?>
+                            <a href="<?php echo htmlspecialchars(buildPageUrl($currentPage - 1)); ?>">
+                                Previous
+                            </a>
+                        <?php endif; ?>
+
+                        <span class="current-page">
+                            Page <?php echo $currentPage; ?> of <?php echo $totalPages; ?>
+                        </span>
+
+                        <?php if ($currentPage < $totalPages): ?>
+                            <a href="<?php echo htmlspecialchars(buildPageUrl($currentPage + 1)); ?>">
+                                Next
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
             <?php else: ?>
                 <div class="no-results">No books found in the database.</div>
             <?php endif; ?>

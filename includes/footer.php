@@ -1,32 +1,28 @@
-    </div> 
+</div> 
 
-    
-    <footer class="footer">
-        <div class="footer-content">
+<footer class="footer">
+    <div class="footer-content">
 
-            <div class="footer-left">
-                <div class="footer-logo">
-                    <span class="footer-logo-text">BookReserve</span>
-                    <img src="imgs/logo.png" alt="Logo" class="footer-logo-img">
-                </div>
-                <p class="footer-tagline">reserving books with ease.</p>
+        <div class="footer-left">
+            <div class="footer-logo">
+                <span class="footer-logo-text">BookReserve</span>
+                <img src="imgs/logo.png" alt="Logo" class="footer-logo-img">
             </div>
-
-            <div class="footer-right">
-                <p><strong>Contact Us</strong></p>
-                <p>Email: support@bookreserve.ie</p>
-                <p>Phone: +353 83 2081803</p>
-                <p>Address: 23 The Burnaby, Greystones, Wicklow</p>
-            </div>
-
+            <p class="footer-tagline">Made By Seamus Darcy</p>
         </div>
 
-        <div class="footer-bottom">
-            © 2025 BookReserve — All rights reserved.
+        <div class="footer-right">
+            <p><strong>Contact Us</strong></p>
+            <p>Email: support@bookreserve.ie</p>
+            <p>Phone: +353 83 2081803</p>
+            <p>Address: 23 The Burnaby, Greystones, Wicklow</p>
         </div>
-    </footer>
 
-</div> <!-- end page-wrapper -->
+    </div>
+
+</footer>
+
+</div> <!-- main page wrapper ends -->
 
 <style>
     .footer {
@@ -72,7 +68,7 @@
     /* Right side */
     .footer-right p {
         margin: 3px 0;
-        font-size: 11px; /
+        font-size: 11px;
         color: #cbd0e0;
     }
 
@@ -81,17 +77,16 @@
         color: #e4e8f2;
     }
 
-    /* Bottom bar */
+    
     .footer-bottom {
         text-align: center;
-        margin-top: 15px; /
+        margin-top: 15px;
         padding-top: 10px; 
         border-top: 1px solid #2c3145;
         font-size: 11px; 
         color: #78809a;
     }
 
-    
     @media (max-width: 600px) {
         .footer-content {
             flex-direction: column;

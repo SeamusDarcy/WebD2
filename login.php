@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please enter both username and password.';
     } else {
 
-        // Corrected: removed userId (does not exist in your DB)
+        
         $sql = "SELECT username, password, FirstName, Surname 
                 FROM User 
                 WHERE username = ?";
